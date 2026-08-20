@@ -34,6 +34,12 @@ def insert_to_queue(cur, job):
 	cur.execute("""
 		INSERT INTO jobs(job, status) VALUES(?, ?)""",(job, "pending"))
 
+def update_status(cur, id, status):
+	cur.execute("""
+		UPDATE jobs
+		SET status = ?
+		WHERE id = ?
+		""", (status, id))
 
 def dequeue(cur):
 	cur.execute("""
@@ -44,15 +50,6 @@ def dequeue(cur):
 		RETURNING id, job
 		""")
 	return cur.fetchone()
-
-
-def name(cur, id, status):
-	cur.execute("""
-		UPDATE jobs
-		SET status = ?
-		WHERE id = ?
-		"""(status, id)
-		)
 
 
 @contextmanager
