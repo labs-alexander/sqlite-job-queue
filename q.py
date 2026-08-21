@@ -34,12 +34,14 @@ def insert_to_queue(cur, job):
 	cur.execute("""
 		INSERT INTO jobs(job, status) VALUES(?, ?)""",(job, "pending"))
 
+
 def update_status(cur, id, status):
 	cur.execute("""
 		UPDATE jobs
 		SET status = ?
 		WHERE id = ?
 		""", (status, id))
+
 
 def dequeue(cur):
 	cur.execute("""
@@ -53,15 +55,19 @@ def dequeue(cur):
 
 
 @contextmanager
-def setup_db():
-	with sqlite3.connect("queue.db") as con:
-		try:			
+def safe_connect():
+	with sqlite3.connect("fix.db") as con:	
+		try:
 			cur = con.cursor()
 			yield cur
+			con.commit()
+
 		except Exception as e:
+			logger.error("An error ocurred: %s", e)
 			con.rollback()
-			logger.error("An error occurred: %s ", e)
 			raise
+
+	con.close()
 
 if __name__ == "__main__":
 	main()
