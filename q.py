@@ -55,7 +55,7 @@ def dequeue(cur):
 
 
 @contextmanager
-def safe_connect():
+def setup_db():
 	with sqlite3.connect("fix.db") as con:	
 		try:
 			cur = con.cursor()
