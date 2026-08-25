@@ -20,7 +20,24 @@ logger.addHandler(stream_handler)
 
 
 def main():
-	...
+	with safe_connect() as cur:
+		setup_db(cur)
+
+		insert_to_db(cur, "https://news.ycombinator.com/")
+		insert_to_db(cur, "https://hn.algolia.com/")
+		logger.info("Job inserido com sucesso.")
+
+"""	with safe_connect() as cur:
+		job = dequeue(cur)
+		logger.info("Job capturado pelo dequeue: %s", job)
+
+		if job:
+			job_id, url = job
+
+			update_db(cur, job_id, "processed")
+			logger.info("Job %s atualizado para processed.", job_id)"""
+
+
 
 
 @contextmanager
