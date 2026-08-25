@@ -1,4 +1,4 @@
-import q
+import queue_db as q
 import time
 from curl_cffi import requests
 from bs4 import BeautifulSoup
