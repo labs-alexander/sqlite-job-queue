@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 file_handler = logging.FileHandler("app.log")
-file_handler = setLevel(logging.DEBUG)
+file_handler.setLevel(logging.DEBUG)
 
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
@@ -36,8 +36,6 @@ def safe_connect():
 			con.rollback()
 			raise
 
-	con.close()
-
 
 def setup_db(cur):
 	cur.execute("""
@@ -50,7 +48,7 @@ def setup_db(cur):
 
 def insert_to_db(cur, url):
 	cur.execute("""
-		INSERT OR IGNORE INTO jobs (url, status) VALUES(?, ?)
+		INSERT INTO jobs (url, status) VALUES(?, ?)
 		""", (url, "pending"))
 
 
@@ -65,7 +63,7 @@ def dequeue(cur):
             LIMIT 1
         )
         AND status = "pending"
-        RETURNING id, job
+        RETURNING id, url
         """)
     return cur.fetchone()
 
