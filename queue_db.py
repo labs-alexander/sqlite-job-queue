@@ -103,7 +103,7 @@ def retry_job(cur, job_id, delay_minutes=30):
 			tries = tries +1,
 			available_at = datetime("now", "+" || ? || " minutes")
 		WHERE id = ?
-	""",(delay_minutes, job_id)
+	""",(delay_minutes, job_id))
 
 
 def mark_failed(cur, job_id):
