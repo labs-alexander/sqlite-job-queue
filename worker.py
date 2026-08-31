@@ -2,14 +2,13 @@ import queue_db as q
 import sys
 import time
 import logging
-from bs4 import BeautifulSoup
-from curl_cffi import requests
 from typing import NamedTuple
+from bs4 import BeautifulSoup
+from curl_cffi.requests import AsyncSession
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
-
 
 class Job(NamedTuple):
 	id: int
@@ -40,13 +39,8 @@ def dequeue_job():
 		return q.dequeue(cur)
 
 
-@retry(
-	stop=stop_after_attempt(5),
-	wait=wait_exponential(multiplier=1, min=2, max=5),
-	reraise=True
-)		
-def fetch(url):
-	response = requests.get(url, impersonate="firefox")
+async def fetch(session, url):
+	response = await session.get(url, impersonate="firefox")
 	response.raise_for_status()
 	return response
 
